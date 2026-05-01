@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portify - Portfolio Builder</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+background:#0a0a0a;
+color:#fff;
+overflow-x:hidden;
+}
+
+/* BACKGROUND BLUR EFFECT */
+body::before{
+content:'';
+position:fixed;
+width:100%;
+height:100%;
+background:radial-gradient(circle at 20% 30%, #00c9a7, transparent 40%),
+radial-gradient(circle at 80% 70%, #764ba2, transparent 40%);
+filter:blur(120px);
+z-index:-1;
+}
+
+/* HEADER */
+header{
+display:flex;
+justify-content:space-between;
+padding:20px 40px;
+position:sticky;
+top:0;
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(10px);
+z-index:100;
+}
+
+.logo{
+font-size:24px;
+font-weight:700;
+letter-spacing:1px;
+animation:fadeIn 1s ease;
+}
+
+nav button{
+margin-left:10px;
+padding:8px 14px;
+border:none;
+border-radius:6px;
+background:#00c9a7;
+color:white;
+cursor:pointer;
+transition:.3s;
+}
+
+nav button:hover{
+transform:scale(1.05);
+background:#00a58c;
+}
+
+/* HERO */
+.hero{
+text-align:center;
+padding:100px 20px;
+animation:fadeIn 1.5s ease;
+}
+
+.hero h1{
+font-size:48px;
+margin-bottom:10px;
+}
+
+.hero p{
+opacity:.7;
+}
+
+/* FORM */
+.container{
+display:flex;
+gap:20px;
+padding:40px;
+flex-wrap:wrap;
+}
+
+.card{
+flex:1;
+min-width:300px;
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:15px;
+backdrop-filter:blur(15px);
+box-shadow:0 0 20px rgba(0,0,0,0.3);
+animation:fadeUp 1s ease;
+}
+
+input, textarea{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:none;
+border-radius:8px;
+background:#111;
+color:#fff;
+}
+
+button.primary{
+background:#00c9a7;
+padding:10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+}
+
+button.primary:hover{
+transform:scale(1.05);
+}
+
+/* TEMPLATE CARDS */
+.templates{
+display:flex;
+gap:15px;
+justify-content:center;
+margin:20px;
+}
+
+.template{
+width:120px;
+height:80px;
+border-radius:10px;
+cursor:pointer;
+transition:.3s;
+border:2px solid transparent;
+}
+
+.template:hover{
+transform:scale(1.1);
+border-color:#00c9a7;
+}
+
+.modern{background:linear-gradient(135deg,#667eea,#764ba2);}
+.dark{background:#222;}
+.minimal{background:#ddd;}
+
+/* PREVIEW */
+.preview{
+background:#111;
+padding:20px;
+border-radius:10px;
+min-height:200px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;}
+}
+
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(40px);}
+to{opacity:1;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">🚀 Portify</div>
+<nav>
+<button onclick="toggleMode()">🌙</button>
+<button onclick="exportPortfolio()">Export</button>
+</nav>
+</header>
+
+<section class="hero">
+<h1>Create Your Portfolio</h1>
+<p>Build stunning developer portfolios in seconds</p>
+</section>
+
+<div class="templates">
+<div class="template modern" onclick="setTheme('modern')"></div>
+<div class="template dark" onclick="setTheme('dark')"></div>
+<div class="template minimal" onclick="setTheme('minimal')"></div>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h3>Build Portfolio</h3>
+
+<input id="name" placeholder="Your Name">
+<textarea id="about" placeholder="About You"></textarea>
+<input id="skills" placeholder="Skills (comma separated)">
+<input id="project" placeholder="Add Project">
+
+<button class="primary" onclick="addProject()">Add Project</button>
+<button class="primary" onclick="save()">Save</button>
+<button class="primary" onclick="clearData()">Clear</button>
+
+</div>
+
+<div class="card preview" id="preview">
+<h2 id="pname">Your Name</h2>
+<p id="pabout">About section...</p>
+<h4>Skills</h4>
+<ul id="pskills"></ul>
+<h4>Projects</h4>
+<ul id="pprojects"></ul>
+</div>
+
+</div>
+
+<script>
+
+let projects = [];
+let theme = "modern";
+
+/* THEME */
+function setTheme(t){
+theme = t;
+document.body.style.background = t==="dark" ? "#000" :
+t==="minimal" ? "#fff" : "#0a0a0a";
+}
+
+/* ADD PROJECT */
+function addProject(){
+const val = document.getElementById("project").value;
+if(val){
+projects.push(val);
+updatePreview();
+}
+}
+
+/* SAVE */
+function save(){
+updatePreview();
+}
+
+/* CLEAR */
+function clearData(){
+location.reload();
+}
+
+/* UPDATE PREVIEW */
+function updatePreview(){
+document.getElementById("pname").innerText =
+document.getElementById("name").value || "Your Name";
+
+document.getElementById("pabout").innerText =
+document.getElementById("about").value || "About...";
+
+let skills = document.getElementById("skills").value.split(",");
+let sHTML="";
+skills.forEach(s=>{ if(s) sHTML+=`<li>${s}</li>` });
+document.getElementById("pskills").innerHTML = sHTML;
+
+let pHTML="";
+projects.forEach(p=> pHTML+=`<li>${p}</li>`);
+document.getElementById("pprojects").innerHTML = pHTML;
+}
+
+/* EXPORT */
+function exportPortfolio(){
+let content = document.getElementById("preview").innerHTML;
+let win = window.open("");
+win.document.write(content);
+win.print();
+}
+
+/* DARK MODE */
+function toggleMode(){
+document.body.classList.toggle("dark");
+}
+
+</script>
+
+</body>
+</html>
