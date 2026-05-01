@@ -4,258 +4,212 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portify - Portfolio Builder</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
 body{
-background:#0a0a0a;
-color:#fff;
-overflow-x:hidden;
-}
-
-body::before{
-content:'';
-position:fixed;
-width:100%;
-height:100%;
-background:
-radial-gradient(circle at 20% 30%, #00c9ff33, transparent 40%),
-radial-gradient(circle at 80% 70%, #764ba233, transparent 40%);
-filter:blur(120px);
-z-index:-1;
-}
-
-nav{
-display:flex;
-justify-content:space-between;
-padding:20px 50px;
-backdrop-filter:blur(20px);
-background:rgba(255,255,255,0.05);
-}
-
-.logo{
-font-size:22px;
-font-weight:700;
-}
-
-button{
-background:#00c9ff;
-border:none;
-padding:10px 20px;
-border-radius:20px;
-cursor:pointer;
-}
-
-.hero{
-text-align:center;
-padding:60px 20px;
-}
-
-.form{
-width:90%;
-max-width:600px;
-margin:20px auto;
-display:flex;
-flex-direction:column;
-gap:15px;
+  font-family: Arial;
+  background:#111;
+  color:#fff;
+  text-align:center;
+  padding:20px;
 }
 
 input, textarea{
-padding:12px;
-border-radius:10px;
-border:none;
-outline:none;
+  width:90%;
+  padding:10px;
+  margin:5px;
 }
 
-.upload-box{
-margin:30px auto;
-padding:20px;
-border:2px dashed #444;
-border-radius:20px;
-width:80%;
-max-width:500px;
-text-align:center;
+button{
+  padding:10px 20px;
+  margin:10px;
+  cursor:pointer;
 }
 
-.templates-heading{
-text-align:center;
-font-size:24px;
-margin-top:40px;
+/* ===== PDF AREA ===== */
+#portfolio{
+  display:none;
+  width:210mm;
+  min-height:297mm;
+  background:#fff;
+  color:#000;
+  padding:20mm;
+  margin:auto;
 }
 
-.themes{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-gap:15px;
-padding:30px;
+/* ===== TEMPLATE 1: CLASSIC ===== */
+.classic h1{
+  text-align:center;
+  border-bottom:2px solid black;
 }
 
-.theme{
-padding:15px;
-border-radius:10px;
-background:#111;
-cursor:pointer;
-transition:.3s;
-text-align:center;
+/* ===== TEMPLATE 2: SIDEBAR ===== */
+.sidebar{
+  display:flex;
+}
+.sidebar .left{
+  width:30%;
+  background:#333;
+  color:#fff;
+  padding:10px;
+}
+.sidebar .right{
+  width:70%;
+  padding:10px;
 }
 
-.theme:hover{
-transform:scale(1.05);
-background:#222;
+/* ===== TEMPLATE 3: GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
-.preview{
-padding:40px;
-text-align:center;
+/* ===== TEMPLATE 4: MINIMAL ===== */
+.minimal h1{
+  font-weight:300;
 }
 
-.preview-box{
-margin-top:20px;
-padding:30px;
-background:#111;
-border-radius:20px;
-text-align:left;
-}
-
-footer{
-text-align:center;
-padding:20px;
-opacity:.6;
-}
-
-/* LOGIN MODAL */
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-justify-content:center;
-align-items:center;
-}
-
-.modal-content{
-background:#111;
-padding:30px;
-border-radius:20px;
-width:300px;
+/* ===== TEMPLATE 5: CREATIVE ===== */
+.creative{
+  border-left:10px solid purple;
+  padding-left:10px;
 }
 </style>
 </head>
 
 <body>
 
-<nav>
-<div class="logo">Portify</div>
-<button onclick="openLogin()">Login</button>
-</nav>
+<h1>Portify</h1>
 
-<section class="hero">
-<h1>Build Your Portfolio</h1>
-<p>Create professional developer portfolios instantly</p>
-</section>
+<input id="name" placeholder="Name">
+<input id="age" placeholder="Age">
+<input id="email" placeholder="Email">
+<input id="phone" placeholder="Phone">
 
-<div class="form">
-<input type="text" id="name" placeholder="Full Name">
-<input type="number" id="age" placeholder="Age">
-<input type="email" id="email" placeholder="Email">
-<input type="text" id="phone" placeholder="Contact Number">
 <textarea id="skills" placeholder="Skills"></textarea>
 <textarea id="interests" placeholder="Interests"></textarea>
 
-<button onclick="generatePortfolio()">Generate Portfolio</button>
-</div>
-
-<div class="upload-box">
-<h3>Upload Files</h3>
-<p>(Resume / Certifications)</p>
+<p>Upload Resume / Certifications</p>
 <input type="file" multiple>
-</div>
 
-<h2 class="templates-heading">Choose your preferred template</h2>
+<h3>Choose Template</h3>
+<button onclick="setTemplate('classic')">Classic</button>
+<button onclick="setTemplate('sidebar')">Sidebar</button>
+<button onclick="setTemplate('grid')">Grid</button>
+<button onclick="setTemplate('minimal')">Minimal</button>
+<button onclick="setTemplate('creative')">Creative</button>
 
-<section class="themes">
-<div class="theme" onclick="selectTheme('Minimal')">Minimal</div>
-<div class="theme" onclick="selectTheme('Dark Pro')">Dark Pro</div>
-<div class="theme" onclick="selectTheme('Glass UI')">Glass UI</div>
-<div class="theme" onclick="selectTheme('Modern')">Modern</div>
-<div class="theme" onclick="selectTheme('Creative')">Creative</div>
-<div class="theme" onclick="selectTheme('Corporate')">Corporate</div>
-<div class="theme" onclick="selectTheme('Startup')">Startup</div>
-<div class="theme" onclick="selectTheme('Bold')">Bold</div>
-<div class="theme" onclick="selectTheme('Elegant')">Elegant</div>
-<div class="theme" onclick="selectTheme('Tech')">Tech</div>
-</section>
-
-<section class="preview">
-<h2>Portfolio Preview</h2>
-<div class="preview-box" id="previewBox">
-Fill details and generate your portfolio
-</div>
 <br>
-<button onclick="window.print()">Download / Print</button>
-</section>
+<button onclick="generate()">Generate</button>
 
-<footer>
-© 2026 Portify
-</footer>
+<div id="portfolio"></div>
 
-<!-- LOGIN MODAL -->
-<div class="modal" id="loginModal">
-<div class="modal-content">
-<h2>Login</h2>
 <br>
-<input type="email" placeholder="Email">
-<input type="password" placeholder="Password">
-<br><br>
-<button onclick="closeLogin()">Login</button>
-</div>
-</div>
+<button onclick="downloadPDF()">Download PDF</button>
 
 <script>
-let selectedTheme="Default";
+let template = "classic";
 
-function selectTheme(theme){
-selectedTheme=theme;
-alert(theme+" selected");
+function setTemplate(t){
+  template = t;
 }
 
-function generatePortfolio(){
-let name=document.getElementById("name").value;
-let age=document.getElementById("age").value;
-let email=document.getElementById("email").value;
-let phone=document.getElementById("phone").value;
-let skills=document.getElementById("skills").value;
-let interests=document.getElementById("interests").value;
+/* GENERATE PORTFOLIO */
+function generate(){
+  const name = nameInput = document.getElementById('name').value;
+  const age = document.getElementById('age').value;
+  const email = document.getElementById('email').value;
+  const phone = document.getElementById('phone').value;
+  const skills = document.getElementById('skills').value;
+  const interests = document.getElementById('interests').value;
 
-document.getElementById("previewBox").innerHTML=`
-<h2>${name}</h2>
-<p><b>Theme:</b> ${selectedTheme}</p>
-<p><b>Age:</b> ${age}</p>
-<p><b>Email:</b> ${email}</p>
-<p><b>Contact:</b> ${phone}</p>
-<hr>
-<p><b>Skills:</b><br>${skills}</p>
-<p><b>Interests:</b><br>${interests}</p>
-`;
+  let html = "";
+
+  if(template === "classic"){
+    html = `
+      <div class="classic">
+        <h1>${name}</h1>
+        <p>${email} | ${phone}</p>
+        <h3>Skills</h3>
+        <p>${skills}</p>
+        <h3>Interests</h3>
+        <p>${interests}</p>
+      </div>
+    `;
+  }
+
+  if(template === "sidebar"){
+    html = `
+      <div class="sidebar">
+        <div class="left">
+          <h2>${name}</h2>
+          <p>${email}</p>
+          <p>${phone}</p>
+        </div>
+        <div class="right">
+          <h3>Skills</h3>
+          <p>${skills}</p>
+          <h3>Interests</h3>
+          <p>${interests}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  if(template === "grid"){
+    html = `
+      <div class="grid">
+        <div><h2>Name</h2><p>${name}</p></div>
+        <div><h2>Contact</h2><p>${phone}</p></div>
+        <div><h2>Email</h2><p>${email}</p></div>
+        <div><h2>Skills</h2><p>${skills}</p></div>
+        <div><h2>Interests</h2><p>${interests}</p></div>
+      </div>
+    `;
+  }
+
+  if(template === "minimal"){
+    html = `
+      <div class="minimal">
+        <h1>${name}</h1>
+        <p>${email}</p>
+        <h3>Skills</h3>
+        <p>${skills}</p>
+      </div>
+    `;
+  }
+
+  if(template === "creative"){
+    html = `
+      <div class="creative">
+        <h1>${name}</h1>
+        <p>${email} | ${phone}</p>
+        <h3>Skills</h3>
+        <p>${skills}</p>
+        <h3>Interests</h3>
+        <p>${interests}</p>
+      </div>
+    `;
+  }
+
+  const portfolio = document.getElementById("portfolio");
+  portfolio.innerHTML = html;
+  portfolio.style.display = "block";
 }
 
-function openLogin(){
-document.getElementById("loginModal").style.display="flex";
-}
+/* PDF EXPORT */
+function downloadPDF(){
+  const element = document.getElementById('portfolio');
 
-function closeLogin(){
-document.getElementById("loginModal").style.display="none";
-alert("Demo Login Successful");
+  html2pdf().from(element).set({
+    margin: 0,
+    filename: 'portfolio.pdf',
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4' }
+  }).save();
 }
 </script>
 
