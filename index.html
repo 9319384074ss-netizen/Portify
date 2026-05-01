@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portify</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
@@ -18,6 +17,7 @@ color:#fff;
 overflow-x:hidden;
 }
 
+/* BLUR BACKGROUND */
 body::before{
 content:'';
 position:fixed;
@@ -30,6 +30,7 @@ filter:blur(120px);
 z-index:-1;
 }
 
+/* NAV */
 nav{
 display:flex;
 justify-content:space-between;
@@ -40,68 +41,106 @@ backdrop-filter:blur(20px);
 
 .logo{font-size:22px;font-weight:700;}
 
-button{
+nav button{
 background:#00c9ff;
 border:none;
-padding:10px 20px;
+padding:10px 18px;
 border-radius:20px;
 cursor:pointer;
 }
 
-/* FORM */
-.form{
-width:90%;
-max-width:600px;
-margin:20px auto;
-display:flex;
-flex-direction:column;
-gap:12px;
+/* HERO */
+.hero{
+text-align:center;
+padding:80px 20px;
+animation:fadeIn 1s ease;
 }
 
-input, textarea{
-padding:10px;
+.hero h1{font-size:42px;margin-bottom:10px;}
+.hero p{opacity:.7;margin-bottom:20px;}
+
+/* CTA */
+.cta-btn{
+background:#00c9ff;
+padding:12px 25px;
+border-radius:25px;
+cursor:pointer;
+}
+
+/* FEATURES */
+.features{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:20px;
+padding:40px;
+}
+
+.feature{
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:15px;
+width:250px;
+text-align:center;
+}
+
+/* BUILDER */
+.builder{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+padding:40px;
+}
+
+.form{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+input,textarea{
+padding:12px;
 border-radius:10px;
 border:none;
 }
 
-/* UPLOAD */
-.upload-box{
-margin:30px auto;
-padding:20px;
-border:2px dashed #444;
-border-radius:20px;
-width:80%;
-max-width:500px;
-text-align:center;
-}
-
-/* TEMPLATES */
-.templates{
-text-align:center;
-margin-top:30px;
-}
-
-.template-btn{
-margin:5px;
-padding:8px 15px;
-background:#111;
-border-radius:10px;
-}
-
-/* PREVIEW */
 .preview{
-text-align:center;
-margin-top:30px;
+background:#fff;
+color:#000;
+border-radius:15px;
+padding:20px;
+min-height:400px;
 }
 
-/* LOGIN MODAL */
+/* PRICING */
+.pricing{
+text-align:center;
+padding:50px 20px;
+}
+
+.price-card{
+display:inline-block;
+background:#111;
+padding:20px;
+margin:10px;
+border-radius:15px;
+width:220px;
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:30px;
+opacity:.6;
+}
+
+/* LOGIN */
 .modal{
 display:none;
 position:fixed;
 top:0;left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
+width:100%;height:100%;
+background:rgba(0,0,0,.7);
 justify-content:center;
 align-items:center;
 }
@@ -112,7 +151,7 @@ padding:20px;
 border-radius:15px;
 }
 
-/* HIDDEN PDF AREA */
+/* PDF */
 #pdfArea{
 display:none;
 width:210mm;
@@ -120,6 +159,12 @@ min-height:297mm;
 background:#fff;
 color:#000;
 padding:20mm;
+}
+
+/* ANIM */
+@keyframes fadeIn{
+from{opacity:0}
+to{opacity:1}
 }
 </style>
 </head>
@@ -131,34 +176,66 @@ padding:20mm;
 <button onclick="openLogin()">Login</button>
 </nav>
 
+<!-- HERO -->
+<section class="hero">
+<h1>Create Stunning Developer Portfolios</h1>
+<p>Live preview. Canva-style templates. Instant export.</p>
+<button class="cta-btn">Start Building</button>
+</section>
+
+<!-- FEATURES -->
+<div class="features">
+<div class="feature">⚡ Instant Portfolio Builder</div>
+<div class="feature">🎨 Premium Templates</div>
+<div class="feature">📄 Perfect PDF Export</div>
+</div>
+
+<!-- BUILDER -->
+<section class="builder">
+
 <div class="form">
-<input id="name" placeholder="Full Name">
-<input id="age" placeholder="Age">
-<input id="email" placeholder="Email">
-<input id="phone" placeholder="Phone">
-<textarea id="skills" placeholder="Skills"></textarea>
-<textarea id="interests" placeholder="Interests"></textarea>
+<h2>Your Details</h2>
 
-<button onclick="generate()">Generate Portfolio</button>
-</div>
+<input id="name" placeholder="Full Name" oninput="updatePreview()">
+<input id="email" placeholder="Email" oninput="updatePreview()">
+<input id="phone" placeholder="Phone" oninput="updatePreview()">
+<textarea id="skills" placeholder="Skills" oninput="updatePreview()"></textarea>
+<textarea id="interests" placeholder="Interests" oninput="updatePreview()"></textarea>
 
-<div class="upload-box">
-<p>Upload Resume / Certifications</p>
-<input type="file" multiple>
-</div>
+<select onchange="setTemplate(this.value)">
+<option value="classic">Classic</option>
+<option value="sidebar">Sidebar</option>
+<option value="minimal">Minimal</option>
+</select>
 
-<div class="templates">
-<h3>Choose your preferred template</h3>
-<button class="template-btn" onclick="setTemplate('classic')">Classic</button>
-<button class="template-btn" onclick="setTemplate('sidebar')">Sidebar</button>
-<button class="template-btn" onclick="setTemplate('grid')">Grid</button>
-<button class="template-btn" onclick="setTemplate('minimal')">Minimal</button>
-<button class="template-btn" onclick="setTemplate('creative')">Creative</button>
-</div>
-
-<div class="preview">
 <button onclick="downloadPDF()">Download PDF</button>
 </div>
+
+<div class="preview" id="previewBox">
+Live preview appears here...
+</div>
+
+</section>
+
+<!-- PRICING -->
+<section class="pricing">
+<h2>Simple Pricing</h2>
+
+<div class="price-card">
+<h3>Free</h3>
+<p>Basic Templates</p>
+</div>
+
+<div class="price-card">
+<h3>Pro</h3>
+<p>Premium Templates</p>
+</div>
+
+</section>
+
+<footer>
+© 2026 Portify — All rights reserved
+</footer>
 
 <!-- LOGIN -->
 <div class="modal" id="loginModal">
@@ -166,96 +243,61 @@ padding:20mm;
 <h3>Login</h3>
 <input placeholder="Email">
 <input placeholder="Password">
+<br><br>
 <button onclick="closeLogin()">Login</button>
 </div>
 </div>
 
-<!-- PDF CONTENT -->
 <div id="pdfArea"></div>
 
 <script>
-let selectedTemplate = "classic";
+let selectedTemplate="classic";
 
 function setTemplate(t){
-selectedTemplate = t;
-alert("Template selected: "+t);
+selectedTemplate=t;
+updatePreview();
 }
 
-/* GENERATE */
-function generate(){
-const name = document.getElementById("name").value;
-const email = document.getElementById("email").value;
-const phone = document.getElementById("phone").value;
-const skills = document.getElementById("skills").value;
-const interests = document.getElementById("interests").value;
+function updatePreview(){
+const name=v("name");
+const email=v("email");
+const phone=v("phone");
+const skills=v("skills");
+const interests=v("interests");
 
-let html = "";
+document.getElementById("previewBox").innerHTML = build(name,email,phone,skills,interests);
+}
 
-/* CLASSIC */
+function v(id){return document.getElementById(id).value;}
+
+function build(name,email,phone,skills,interests){
+
 if(selectedTemplate==="classic"){
-html = `
-<h1>${name}</h1>
-<p>${email} | ${phone}</p>
-<hr>
+return `<h1>${name}</h1><p>${email} | ${phone}</p><hr>
 <h3>Skills</h3><p>${skills}</p>
-<h3>Interests</h3><p>${interests}</p>
-`;
+<h3>Interests</h3><p>${interests}</p>`;
 }
 
-/* SIDEBAR */
 if(selectedTemplate==="sidebar"){
-html = `
-<div style="display:flex">
+return `<div style="display:flex">
 <div style="width:30%;background:#333;color:#fff;padding:10px">
-<h2>${name}</h2>
-<p>${email}</p>
-<p>${phone}</p>
+<h2>${name}</h2><p>${email}</p>
 </div>
 <div style="width:70%;padding:10px">
 <h3>Skills</h3><p>${skills}</p>
-<h3>Interests</h3><p>${interests}</p>
-</div>
-</div>
-`;
+</div></div>`;
 }
 
-/* GRID */
-if(selectedTemplate==="grid"){
-html = `
-<div style="display:grid;grid-template-columns:1fr 1fr">
-<div><h3>Name</h3><p>${name}</p></div>
-<div><h3>Contact</h3><p>${phone}</p></div>
-<div><h3>Email</h3><p>${email}</p></div>
-<div><h3>Skills</h3><p>${skills}</p></div>
-</div>
-`;
-}
-
-/* MINIMAL */
 if(selectedTemplate==="minimal"){
-html = `<h1>${name}</h1><p>${email}</p><p>${skills}</p>`;
+return `<h1>${name}</h1><p>${email}</p>`;
+}
 }
 
-/* CREATIVE */
-if(selectedTemplate==="creative"){
-html = `
-<div style="border-left:10px solid purple;padding-left:10px">
-<h1>${name}</h1>
-<p>${email} | ${phone}</p>
-<h3>Skills</h3><p>${skills}</p>
-<h3>Interests</h3><p>${interests}</p>
-</div>
-`;
-}
-
-document.getElementById("pdfArea").innerHTML = html;
-}
-
-/* PDF EXPORT */
 function downloadPDF(){
-const element = document.getElementById("pdfArea");
+document.getElementById("pdfArea").innerHTML =
+build(v("name"),v("email"),v("phone"),v("skills"),v("interests"));
 
-html2pdf().from(element).set({
+html2pdf().from(document.getElementById("pdfArea")).set({
 margin:0,
 filename:"portfolio.pdf",
 html2canvas:{scale:2},
@@ -263,13 +305,12 @@ jsPDF:{unit:'mm',format:'a4'}
 }).save();
 }
 
-/* LOGIN */
 function openLogin(){
 document.getElementById("loginModal").style.display="flex";
 }
+
 function closeLogin(){
 document.getElementById("loginModal").style.display="none";
-alert("Demo login");
 }
 </script>
 
