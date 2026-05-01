@@ -50,22 +50,30 @@ cursor:pointer;
 /* HERO */
 .hero{
 text-align:center;
-padding:80px 20px;
+padding:60px 20px;
 }
 
-.hero h1{
-font-size:40px;
-margin-bottom:20px;
+/* FORM */
+.form{
+width:90%;
+max-width:600px;
+margin:20px auto;
+display:flex;
+flex-direction:column;
+gap:15px;
 }
 
-.hero p{
-opacity:0.7;
+input, textarea{
+padding:10px;
+border-radius:10px;
+border:none;
+outline:none;
 }
 
 /* UPLOAD */
 .upload-box{
-margin:40px auto;
-padding:30px;
+margin:30px auto;
+padding:20px;
 border:2px dashed #444;
 border-radius:20px;
 width:80%;
@@ -73,22 +81,21 @@ max-width:500px;
 text-align:center;
 }
 
-input{margin-top:10px;}
-
 /* THEMES */
 .themes{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:20px;
-padding:40px;
+grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+gap:15px;
+padding:30px;
 }
 
 .theme{
-padding:20px;
-border-radius:15px;
+padding:15px;
+border-radius:10px;
 background:#111;
 cursor:pointer;
 transition:0.3s;
+text-align:center;
 }
 
 .theme:hover{
@@ -107,6 +114,7 @@ margin-top:20px;
 padding:30px;
 background:#111;
 border-radius:20px;
+text-align:left;
 }
 
 /* FOOTER */
@@ -126,21 +134,36 @@ opacity:0.6;
 </nav>
 
 <section class="hero">
-<h1>Create Stunning Developer Portfolios</h1>
-<p>Upload your resume or certificates and generate a professional portfolio instantly.</p>
+<h1>Build Your Portfolio</h1>
+<p>Enter your details and generate a professional portfolio</p>
 </section>
 
+<!-- FORM -->
+<div class="form">
+<input type="text" id="name" placeholder="Full Name">
+<input type="number" id="age" placeholder="Age">
+<input type="email" id="email" placeholder="Email">
+<input type="text" id="phone" placeholder="Contact Number">
+
+<textarea id="skills" placeholder="Skills (e.g. HTML, CSS, JavaScript)"></textarea>
+<textarea id="interests" placeholder="Interests"></textarea>
+
+<button onclick="generatePortfolio()">Generate Portfolio</button>
+</div>
+
+<!-- UPLOAD -->
 <div class="upload-box">
 <h3>Upload Files</h3>
-<p>(Resume or Certifications)</p>
+<p>(Resume / Certifications)</p>
 <input type="file" multiple>
 </div>
 
+<!-- THEMES -->
 <section class="themes">
 <div class="theme" onclick="selectTheme('Minimal')">Minimal</div>
 <div class="theme" onclick="selectTheme('Dark Pro')">Dark Pro</div>
 <div class="theme" onclick="selectTheme('Glass UI')">Glass UI</div>
-<div class="theme" onclick="selectTheme('Modern Grid')">Modern Grid</div>
+<div class="theme" onclick="selectTheme('Modern')">Modern</div>
 <div class="theme" onclick="selectTheme('Creative')">Creative</div>
 <div class="theme" onclick="selectTheme('Corporate')">Corporate</div>
 <div class="theme" onclick="selectTheme('Startup')">Startup</div>
@@ -149,27 +172,46 @@ opacity:0.6;
 <div class="theme" onclick="selectTheme('Tech')">Tech</div>
 </section>
 
+<!-- PREVIEW -->
 <section class="preview">
-<h2>Live Preview</h2>
+<h2>Portfolio Preview</h2>
 <div class="preview-box" id="previewBox">
-Select a theme to preview your portfolio
+Fill details and click "Generate Portfolio"
 </div>
 <br>
-<button onclick="downloadPortfolio()">Download Portfolio</button>
+<button onclick="window.print()">Download / Print</button>
 </section>
 
 <footer>
-© 2026 Portify | Startup Ready Portfolio Builder
+© 2026 Portify | Portfolio Builder
 </footer>
 
 <script>
+let selectedTheme = "Default";
+
 function selectTheme(theme){
-document.getElementById("previewBox").innerHTML =
-"<h3>"+theme+" Theme</h3><p>Your portfolio preview will appear here.</p>";
+selectedTheme = theme;
+alert(theme + " theme selected");
 }
 
-function downloadPortfolio(){
-alert("Portfolio downloaded (demo)");
+function generatePortfolio(){
+let name = document.getElementById("name").value;
+let age = document.getElementById("age").value;
+let email = document.getElementById("email").value;
+let phone = document.getElementById("phone").value;
+let skills = document.getElementById("skills").value;
+let interests = document.getElementById("interests").value;
+
+document.getElementById("previewBox").innerHTML = `
+<h2>${name}</h2>
+<p><b>Theme:</b> ${selectedTheme}</p>
+<p><b>Age:</b> ${age}</p>
+<p><b>Email:</b> ${email}</p>
+<p><b>Contact:</b> ${phone}</p>
+<hr>
+<p><b>Skills:</b><br>${skills}</p>
+<p><b>Interests:</b><br>${interests}</p>
+`;
 }
 </script>
 
